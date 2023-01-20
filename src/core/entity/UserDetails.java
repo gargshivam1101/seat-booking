@@ -9,7 +9,7 @@ public class UserDetails {
 	private String email;
 
 	private String password;
-	
+
 	/**
 	 * @param firstName
 	 * @param lastName

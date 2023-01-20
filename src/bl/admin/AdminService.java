@@ -11,38 +11,43 @@ import core.enums.Role;
 public class AdminService extends UserService {
 
 	public void menu() {
-		System.out.println("Welcome Admin! Please choose an option from the below menu");
+		Boolean isLoggedIn = true;
+		while (isLoggedIn) {
+			System.out.println("Please choose an option from the below menu");
 
-		System.out.println("1. Register a business owner");
-		System.out.println("2. Register a client");
-		System.out.println("3. Display all business owners");
-		System.out.println("4. Display all clients");
-		System.out.println("5. Check Complaints");
-		System.out.println("6. Logout");
+			System.out.println("1. Register a business owner");
+			System.out.println("2. Register a client");
+			System.out.println("3. Display all business owners");
+			System.out.println("4. Display all clients");
+			System.out.println("5. Check Complaints");
+			System.out.println("6. Logout");
 
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("Press an option: ");
-		Integer option = scanner.nextInt();
-		scanner.nextLine();
-		switch (option) {
-		case 1:
-			registerUser(Role.OWNER);
-			System.out.println(getUserList());
-			break;
-		case 2:
-			registerUser(Role.CLIENT);
-			System.out.println(getUserList());
-			break;
-		case 3:
-			displayUsersByRole(Role.OWNER);
-			break;
-		case 4:
-			displayUsersByRole(Role.CLIENT);
-			break;
-		default:
-			System.out.println("Wrong option!");
-			break;
+			Scanner scanner = new Scanner(System.in);
+			System.out.println("Press an option: ");
+			Integer option = scanner.nextInt();
+//			scanner.nextLine();
+			switch (option) {
+			case 1:
+				registerUser(Role.OWNER);
+				break;
+			case 2:
+				registerUser(Role.CLIENT);
+				break;
+			case 3:
+				displayUsersByRole(Role.OWNER);
+				break;
+			case 4:
+				displayUsersByRole(Role.CLIENT);
+				break;
+			case 6:
+				isLoggedIn = false;
+				logout();
+			default:
+				System.out.println("Wrong option!");
+				break;
+			}
 		}
+
 	}
 
 	private void displayUsersByRole(Role role) {
@@ -71,6 +76,7 @@ public class AdminService extends UserService {
 		password = scanner.nextLine();
 		UserDetails userDetails = new UserDetails(firstName, lastName, email, password);
 		putUserList(new User(userDetails, role));
-		scanner.close();
+		System.out.println(firstName + " has been registered successfully");
+//		scanner.close();
 	}
 }
