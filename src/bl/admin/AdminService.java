@@ -1,6 +1,8 @@
 package bl.admin;
 
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import core.entity.User;
 import core.entity.UserDetails;
@@ -14,7 +16,9 @@ public class AdminService extends UserService {
 		System.out.println("1. Register a business owner");
 		System.out.println("2. Register a client");
 		System.out.println("3. Display all business owners");
-		System.out.println("4. Display ");
+		System.out.println("4. Display all clients");
+		System.out.println("5. Check Complaints");
+		System.out.println("6. Logout");
 
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Press an option: ");
@@ -29,9 +33,27 @@ public class AdminService extends UserService {
 			registerUser(Role.CLIENT);
 			System.out.println(getUserList());
 			break;
+		case 3:
+			displayUsersByRole(Role.OWNER);
+			break;
+		case 4:
+			displayUsersByRole(Role.CLIENT);
+			break;
 		default:
 			System.out.println("Wrong option!");
 			break;
+		}
+	}
+
+	private void displayUsersByRole(Role role) {
+		// TODO Auto-generated method stub
+		List<User> allUsers = getUserList();
+		List<User> filteredUsersByRole = allUsers.stream().filter(user -> user.getRole().equals(role))
+				.collect(Collectors.toList());
+
+		for (User user : filteredUsersByRole) {
+			System.out.println("Name: " + user.getUserDetails().getFirstName() + " "
+					+ user.getUserDetails().getLastName());
 		}
 	}
 
