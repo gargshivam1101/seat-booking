@@ -2,75 +2,66 @@ package core.entity;
 
 public class Seat {
 
-	private Integer id;
+	private Integer row;
 
-	private Float price;
+	private Integer column;
 
-	private Boolean available;
+	private Room room;
 
-	private UserDetails owner;
-
-	/**
-	 * @return the id
-	 */
-	public Integer getId() {
-		return id;
+	public Seat(Integer row, Integer column, Room room) {
+		super();
+		this.row = row;
+		this.column = column;
+		this.room = room;
 	}
 
 	/**
-	 * @param id the id to set
+	 * @return the row
 	 */
-	public void setId(Integer id) {
-		this.id = id;
+	public Integer getRow() {
+		return row;
 	}
 
 	/**
-	 * @return the price
+	 * @param row the row to set
 	 */
-	public Float getPrice() {
-		return price;
+	public void setRow(Integer row) {
+		this.row = row;
 	}
 
 	/**
-	 * @param price the price to set
+	 * @return the column
 	 */
-	public void setPrice(Float price) {
-		this.price = price;
+	public Integer getColumn() {
+		return column;
 	}
 
 	/**
-	 * @return the available
+	 * @param column the column to set
 	 */
-	public Boolean getAvailable() {
-		return available;
+	public void setColumn(Integer column) {
+		this.column = column;
 	}
 
 	/**
-	 * @param available the available to set
+	 * @return the room
 	 */
-	public void setAvailable(Boolean available) {
-		this.available = available;
+	public Room getRoom() {
+		return room;
 	}
 
 	/**
-	 * @return the owner
+	 * @param room the room to set
 	 */
-	public UserDetails getOwner() {
-		return owner;
-	}
-
-	/**
-	 * @param owner the owner to set
-	 */
-	public void setOwner(UserDetails owner) {
-		this.owner = owner;
+	public void setRoom(Room room) {
+		this.room = room;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Seat [id=").append(id).append(", price=").append(price).append(", available=")
-				.append(available).append(", owner=").append(owner).append("]");
+		builder.append("Seat [row=").append(row).append(", column=").append(column).append(", room=")
+				.append(room).append("]");
 		return builder.toString();
 	}
 }

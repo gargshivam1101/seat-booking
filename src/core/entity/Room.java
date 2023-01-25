@@ -14,11 +14,11 @@ public class Room {
 
 	private Integer size;
 
-	private Integer regularPrice;
+	private Double regularPrice;
 
 	private User businessOwner;
 
-	public Room(RoomType roomType, Integer size, Integer regularPrice, User businessOwner) {
+	public Room(RoomType roomType, Integer size, Double regularPrice, User businessOwner) {
 		super();
 		this.id = count.incrementAndGet();
 		this.roomType = roomType;
@@ -72,14 +72,14 @@ public class Room {
 	/**
 	 * @return the regularPrice
 	 */
-	public Integer getRegularPrice() {
+	public Double getRegularPrice() {
 		return regularPrice;
 	}
 
 	/**
 	 * @param regularPrice the regularPrice to set
 	 */
-	public void setRegularPrice(Integer regularPrice) {
+	public void setRegularPrice(Double regularPrice) {
 		this.regularPrice = regularPrice;
 	}
 

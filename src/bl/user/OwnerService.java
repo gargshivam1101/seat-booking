@@ -1,6 +1,8 @@
 package bl.user;
 
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import bl.booking.RoomService;
 import core.entity.Room;
@@ -37,10 +39,15 @@ public class OwnerService extends UserService {
 				rows = scanner.nextInt();
 				System.out.println("Enter the price of a regular seat");
 				price = scanner.nextInt();
-				RoomService.bookRoom(loggedInUser, RoomType.values()[type], rows, price);
+				Integer roomId = RoomService.bookRoom(loggedInUser, RoomType.values()[type], rows, price);
+				System.out.println("Your room with id " + roomId + "has been booked");
 				break;
 			case 2:
-				for (Room room : RoomService.getRoomList()) {
+				List<Room> usersRooms = RoomService.getRoomList().stream().filter(r -> r.getBusinessOwner()
+						.getUserDetails().getEmail().equals(loggedInUser.getUserDetails().getEmail()))
+						.collect(Collectors.toList());
+
+				for (Room room : usersRooms) {
 					System.out.println("Room ID: " + room.getId() + ", of type " + room.getRoomType()
 							+ " and size " + room.getSize());
 				}

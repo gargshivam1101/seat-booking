@@ -2,6 +2,7 @@ package bl.booking;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import core.entity.Room;
 import core.entity.User;
@@ -19,9 +20,13 @@ public class RoomService {
 		roomList.add(room);
 	}
 
-	public static void bookRoom(User loggedInUser, RoomType roomType, int rows, int price) {
-		Room room = new Room(roomType, rows * rows, price, loggedInUser);
+	public static Room getRoomById(Integer id) {
+		return RoomService.getRoomList().stream().filter(r -> id == r.getId()).findFirst().orElse(null);
+	}
+
+	public static Integer bookRoom(User loggedInUser, RoomType roomType, int rows, double price) {
+		Room room = new Room(roomType, rows, price, loggedInUser);
 		putRoomList(room);
-		System.out.println(getRoomList());
+		return room.getId();
 	}
 }
