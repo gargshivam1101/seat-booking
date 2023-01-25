@@ -1,8 +1,9 @@
-package bl.admin;
+package bl.user;
 
 import java.util.Scanner;
 
 import bl.booking.RoomService;
+import core.entity.Room;
 import core.enums.RoomType;
 
 public class OwnerService extends UserService {
@@ -39,10 +40,21 @@ public class OwnerService extends UserService {
 				RoomService.bookRoom(loggedInUser, RoomType.values()[type], rows, price);
 				break;
 			case 2:
+				for (Room room : RoomService.getRoomList()) {
+					System.out.println("Room ID: " + room.getId() + ", of type " + room.getRoomType()
+							+ " and size " + room.getSize());
+				}
+				break;
 			case 3:
+				System.out.println("Enter the room id to proceed");
+				break;
 			case 4:
 				isLoggedIn = false;
 				logout();
+				break;
+			default:
+				System.out.println("Wrong option!");
+				break;
 			}
 		}
 	}

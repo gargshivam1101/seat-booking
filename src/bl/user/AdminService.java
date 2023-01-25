@@ -1,4 +1,4 @@
-package bl.admin;
+package bl.user;
 
 import java.util.List;
 import java.util.Scanner;

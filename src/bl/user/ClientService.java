@@ -1,4 +1,4 @@
-package bl.admin;
+package bl.user;
 
 public class ClientService extends UserService {
 

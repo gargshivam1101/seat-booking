@@ -1,6 +1,6 @@
 package sg_seat_booking;
 
-import bl.admin.UserService;
+import bl.user.UserService;
 
 public class Main {
 
