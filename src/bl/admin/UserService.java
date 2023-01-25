@@ -9,10 +9,15 @@ import core.entity.User;
 import core.entity.UserDetails;
 import core.enums.Role;
 
-public class UserService {
+public abstract class UserService implements IUserService {
 
-	static List<User> userList = new ArrayList<>(Arrays
-			.asList(new User(new UserDetails("Admin", "User", "admin@soen.com", "admin"), Role.ADMIN)));
+	public abstract void menu();
+
+	static List<User> userList = new ArrayList<>(Arrays.asList(//
+			new User(new UserDetails("Admin", "User", "admin@soen.com", "admin"), Role.ADMIN), //
+			new User(new UserDetails("Shivam", "Garg", "shivam.garg@soen.com", "garg"), Role.OWNER)));
+
+	static User loggedInUser = null;
 
 	public static List<User> getUserList() {
 		return userList;
@@ -24,6 +29,7 @@ public class UserService {
 
 	public static void login() {
 		while (true) {
+			System.out.println("✦•······················•✦•······················•✦");
 			System.out.println("Please login with your registered credentials");
 
 			Scanner scanner = new Scanner(System.in); // java.io.console does not work on Eclipse
@@ -35,25 +41,27 @@ public class UserService {
 
 //		scanner.close();
 
-			User loggedInUser = getUserList().stream()
+			User lgInUser = getUserList().stream()
 					.filter(user -> user.getUserDetails().getEmail().equals(email)
 							&& user.getUserDetails().getPassword().equals(password))
 					.findFirst().orElse(null);
 
-			if (loggedInUser == null) {
+			if (lgInUser == null) {
 				System.out.println("Sorry, you have entered wrong credentials!");
 				continue;
 			}
 
-			System.out.println("Welcome " + loggedInUser.getUserDetails().getFirstName());
+			loggedInUser = lgInUser;
 
-			if (loggedInUser.getRole().equals(Role.ADMIN)) {
+			System.out.println("Welcome " + lgInUser.getUserDetails().getFirstName());
+
+			if (lgInUser.getRole().equals(Role.ADMIN)) {
 				AdminService adminService = new AdminService();
 				adminService.menu();
-			} else if (loggedInUser.getRole().equals(Role.OWNER)) {
+			} else if (lgInUser.getRole().equals(Role.OWNER)) {
 				OwnerService ownerService = new OwnerService();
 				ownerService.menu();
-			} else if (loggedInUser.getRole().equals(Role.CLIENT)) {
+			} else if (lgInUser.getRole().equals(Role.CLIENT)) {
 				ClientService clientService = new ClientService();
 				clientService.menu();
 			} else {
@@ -66,5 +74,4 @@ public class UserService {
 		System.out.println("You have been successfully logged out");
 		login();
 	}
-
 }

@@ -10,9 +10,11 @@ import core.enums.Role;
 
 public class AdminService extends UserService {
 
+	@Override
 	public void menu() {
 		Boolean isLoggedIn = true;
 		while (isLoggedIn) {
+			System.out.println("✦•······················•✦•······················•✦");
 			System.out.println("Please choose an option from the below menu");
 
 			System.out.println("1. Register a business owner");
@@ -51,7 +53,6 @@ public class AdminService extends UserService {
 	}
 
 	private void displayUsersByRole(Role role) {
-		// TODO Auto-generated method stub
 		List<User> allUsers = getUserList();
 		List<User> filteredUsersByRole = allUsers.stream().filter(user -> user.getRole().equals(role))
 				.collect(Collectors.toList());
