@@ -11,8 +11,6 @@ public class RoomService {
 
 	static List<Room> roomList = new ArrayList<>();
 
-	static User loggedInUser = null;
-
 	public static List<Room> getRoomList() {
 		return roomList;
 	}
