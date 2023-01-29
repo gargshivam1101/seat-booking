@@ -1,6 +1,7 @@
 package bl.user;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -45,9 +46,14 @@ public class OwnerService extends UserService {
 				price = scanner.nextInt();
 				beginTimeStamp = DateUtils.inputDateFromUser("Beginning");
 				endTimeStamp = DateUtils.inputDateFromUser("End");
+				long minutes = ChronoUnit.MINUTES.between(beginTimeStamp, endTimeStamp);
+				if (minutes < 30) {
+					System.out.println("The time difference must be atleast 30 minutes");
+					continue;
+				}
 				Integer roomId = RoomService.bookRoom(loggedInUser, RoomType.values()[type], rows, price,
 						beginTimeStamp, endTimeStamp);
-				System.out.println("Your room with id " + roomId + "has been booked");
+				System.out.println("Your room with id " + roomId + " has been booked");
 				break;
 			case 2:
 				List<Room> usersRooms = RoomService.getRoomList().stream().filter(r -> r.getBusinessOwner()

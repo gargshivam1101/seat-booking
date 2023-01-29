@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class DateUtils {
-
+	
 	public static LocalDateTime inputDateFromUser(String quesFormat) {
 		Scanner scanner = new Scanner(System.in);
 
@@ -16,10 +16,7 @@ public class DateUtils {
 
 		String timestamp = inputDate + " " + inputTime;
 
-//		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-		LocalDateTime date2 = LocalDateTime.parse(timestamp, dateFormatter);
-		System.out.println(date2);
-		return date2;
+		return LocalDateTime.parse(timestamp, dateFormatter);
 	}
 }

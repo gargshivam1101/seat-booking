@@ -3,9 +3,11 @@ package bl.user;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import bl.booking.RoomService;
 import bl.booking.SeatService;
+import core.entity.Booking;
 import core.entity.Room;
 
 public class ClientService extends UserService {
@@ -18,7 +20,7 @@ public class ClientService extends UserService {
 			System.out.println("Please choose an option from the below menu");
 
 			System.out.println("1. Book a seat");
-			System.out.println("2. Display my booked seats");
+			System.out.println("2. Display my bookings");
 			System.out.println("3. Complain about a booking");
 			System.out.println("4. Logout");
 
@@ -34,6 +36,18 @@ public class ClientService extends UserService {
 						chosenSeat.get(1));
 				System.out.println("Your seat (" + chosenSeat.get(0) + "," + chosenSeat.get(1)
 						+ ") has been booked. The Booking ID is " + bookingId);
+				break;
+			case 2:
+				List<Booking> myBookings = SeatService
+						.getBookingList().stream().filter(b -> b.getUser().getUserDetails()
+								.getEmail() == loggedInUser.getUserDetails().getEmail())
+						.collect(Collectors.toList());
+				for (Booking myBooking : myBookings) {
+					System.out.println("ID: " + myBooking.getId() + " for Seat No. ("
+							+ myBooking.getSeat().getRow() + "," + myBooking.getSeat().getColumn()
+							+ ") and Room No " + myBooking.getSeat().getRoom().getId() + " at "
+							+ myBooking.getSeat().getRoom().getBeginTimeStamp());
+				}
 				break;
 			case 4:
 				isLoggedIn = false;
@@ -55,7 +69,15 @@ public class ClientService extends UserService {
 		System.out.println("Please choose a seat from the below list");
 		for (int i = 0; i < chosenRoom.getSize(); i++) {
 			for (int j = 0; j < chosenRoom.getSize(); j++) {
-				System.out.print("(" + i + "," + j + ")  ");
+				final int li = i, lj = j;
+				Booking seatInBookingList = SeatService.getBookingList().stream()
+						.filter(b -> b.getSeat().getRow() == li && b.getSeat().getColumn() == lj).findAny()
+						.orElse(null);
+				if (seatInBookingList == null) {
+					System.out.print("(" + i + "," + j + ")  ");
+				} else {
+					System.out.print("[X,X]  ");
+				}
 			}
 			System.out.println();
 		}
