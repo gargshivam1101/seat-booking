@@ -1,5 +1,6 @@
 package bl.user;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 import bl.booking.RoomService;
 import core.entity.Room;
 import core.enums.RoomType;
+import core.utils.DateUtils;
 
 public class OwnerService extends UserService {
 
@@ -29,6 +31,8 @@ public class OwnerService extends UserService {
 			switch (option) {
 			case 1:
 				int type, rows, price;
+				LocalDateTime beginTimeStamp, endTimeStamp;
+
 				System.out.println("Please choose the type of room and enter the respective number");
 				for (int i = 0; i < RoomType.values().length; i++) {
 					System.out.println((i + 1) + ". " + RoomType.values()[i]);
@@ -39,7 +43,10 @@ public class OwnerService extends UserService {
 				rows = scanner.nextInt();
 				System.out.println("Enter the price of a regular seat");
 				price = scanner.nextInt();
-				Integer roomId = RoomService.bookRoom(loggedInUser, RoomType.values()[type], rows, price);
+				beginTimeStamp = DateUtils.inputDateFromUser("Beginning");
+				endTimeStamp = DateUtils.inputDateFromUser("End");
+				Integer roomId = RoomService.bookRoom(loggedInUser, RoomType.values()[type], rows, price,
+						beginTimeStamp, endTimeStamp);
 				System.out.println("Your room with id " + roomId + "has been booked");
 				break;
 			case 2:

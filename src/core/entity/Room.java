@@ -1,5 +1,6 @@
 package core.entity;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import core.enums.RoomType;
@@ -18,13 +19,20 @@ public class Room {
 
 	private User businessOwner;
 
-	public Room(RoomType roomType, Integer size, Double regularPrice, User businessOwner) {
+	private LocalDateTime beginTimeStamp;
+
+	private LocalDateTime endTimeStamp;
+
+	public Room(RoomType roomType, Integer size, Double regularPrice, User businessOwner,
+			LocalDateTime beginTimeStamp, LocalDateTime endTimeStamp) {
 		super();
 		this.id = count.incrementAndGet();
 		this.roomType = roomType;
 		this.size = size;
 		this.regularPrice = regularPrice;
 		this.businessOwner = businessOwner;
+		this.beginTimeStamp = beginTimeStamp;
+		this.endTimeStamp = endTimeStamp;
 	}
 
 	/**
@@ -97,12 +105,29 @@ public class Room {
 		this.businessOwner = businessOwner;
 	}
 
+	public LocalDateTime getBeginTimeStamp() {
+		return beginTimeStamp;
+	}
+
+	public void setBeginTimeStamp(LocalDateTime beginTimeStamp) {
+		this.beginTimeStamp = beginTimeStamp;
+	}
+
+	public LocalDateTime getEndTimeStamp() {
+		return endTimeStamp;
+	}
+
+	public void setEndTimeStamp(LocalDateTime endTimeStamp) {
+		this.endTimeStamp = endTimeStamp;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Room [id=").append(id).append(", roomType=").append(roomType).append(", size=")
 				.append(size).append(", regularPrice=").append(regularPrice).append(", businessOwner=")
-				.append(businessOwner).append("]");
+				.append(businessOwner).append(", beginTimeStamp=").append(beginTimeStamp)
+				.append(", endTimeStamp=").append(endTimeStamp).append("]");
 		return builder.toString();
 	}
 }

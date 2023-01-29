@@ -1,8 +1,8 @@
 package bl.booking;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import core.entity.Room;
 import core.entity.User;
@@ -24,8 +24,9 @@ public class RoomService {
 		return RoomService.getRoomList().stream().filter(r -> id == r.getId()).findFirst().orElse(null);
 	}
 
-	public static Integer bookRoom(User loggedInUser, RoomType roomType, int rows, double price) {
-		Room room = new Room(roomType, rows, price, loggedInUser);
+	public static Integer bookRoom(User loggedInUser, RoomType roomType, int rows, double price,
+			LocalDateTime beginTimeStamp, LocalDateTime endTimeStamp) {
+		Room room = new Room(roomType, rows, price, loggedInUser, beginTimeStamp, endTimeStamp);
 		putRoomList(room);
 		return room.getId();
 	}

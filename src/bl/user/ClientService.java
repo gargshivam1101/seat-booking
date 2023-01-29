@@ -46,6 +46,10 @@ public class ClientService extends UserService {
 		}
 	}
 
+//	private void checkIfSeatIsAvailable(Seat seat) {
+//		
+//	}
+
 	private List<Integer> chooseASeat(Room chosenRoom) {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Please choose a seat from the below list");
@@ -72,7 +76,8 @@ public class ClientService extends UserService {
 		for (Room room : RoomService.getRoomList()) {
 			System.out.println("Room ID: " + room.getId() + ", of type " + room.getRoomType()
 					+ " and regular price " + room.getRegularPrice() + ", posted by "
-					+ room.getBusinessOwner().getUserDetails().getFirstName());
+					+ room.getBusinessOwner().getUserDetails().getFirstName() + ", and available from "
+					+ room.getBeginTimeStamp() + " to " + room.getEndTimeStamp());
 		}
 		int choiceOfRoom = scanner.nextInt();
 		return RoomService.getRoomById(choiceOfRoom);
