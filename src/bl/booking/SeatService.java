@@ -35,9 +35,26 @@ public class SeatService {
 		} else {
 			price = regularPrice;
 		}
-		
+
 		Booking booking = new Booking(seat, price, LocalDateTime.now(), loggedInUser);
 		putBookingList(booking);
 		return booking.getId();
+	}
+
+	public static void showSeatsByRoom(Room room) {
+		for (int i = 0; i < room.getSize(); i++) {
+			for (int j = 0; j < room.getSize(); j++) {
+				final int li = i, lj = j;
+				Booking seatInBookingList = getBookingList().stream()
+						.filter(b -> b.getSeat().getRow() == li && b.getSeat().getColumn() == lj).findAny()
+						.orElse(null);
+				if (seatInBookingList == null) {
+					System.out.print("(" + i + "," + j + ")  ");
+				} else {
+					System.out.print("[X,X]  ");
+				}
+			}
+			System.out.println();
+		}
 	}
 }

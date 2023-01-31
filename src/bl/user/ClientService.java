@@ -67,20 +67,7 @@ public class ClientService extends UserService {
 	private List<Integer> chooseASeat(Room chosenRoom) {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Please choose a seat from the below list");
-		for (int i = 0; i < chosenRoom.getSize(); i++) {
-			for (int j = 0; j < chosenRoom.getSize(); j++) {
-				final int li = i, lj = j;
-				Booking seatInBookingList = SeatService.getBookingList().stream()
-						.filter(b -> b.getSeat().getRow() == li && b.getSeat().getColumn() == lj).findAny()
-						.orElse(null);
-				if (seatInBookingList == null) {
-					System.out.print("(" + i + "," + j + ")  ");
-				} else {
-					System.out.print("[X,X]  ");
-				}
-			}
-			System.out.println();
-		}
+		SeatService.showSeatsByRoom(chosenRoom);
 		String choiceOfSeat = scanner.nextLine();
 		int row = Integer.parseInt(choiceOfSeat.split(",")[0]);
 		int column = Integer.parseInt(choiceOfSeat.split(",")[1]);

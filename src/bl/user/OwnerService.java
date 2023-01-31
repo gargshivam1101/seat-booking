@@ -7,6 +7,7 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import bl.booking.RoomService;
+import bl.booking.SeatService;
 import core.entity.Room;
 import core.enums.RoomType;
 import core.utils.DateUtils;
@@ -22,7 +23,7 @@ public class OwnerService extends UserService {
 
 			System.out.println("1. Register a room");
 			System.out.println("2. Display my registered rooms");
-			System.out.println("3. Display my available seats");
+			System.out.println("3. Display seats and their availability");
 			System.out.println("4. Logout");
 
 			Scanner scanner = new Scanner(System.in);
@@ -67,6 +68,8 @@ public class OwnerService extends UserService {
 				break;
 			case 3:
 				System.out.println("Enter the room id to proceed");
+				roomId = scanner.nextInt();
+				SeatService.showSeatsByRoom(RoomService.getRoomById(roomId));
 				break;
 			case 4:
 				isLoggedIn = false;
