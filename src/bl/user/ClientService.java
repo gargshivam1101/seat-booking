@@ -9,6 +9,7 @@ import bl.booking.RoomService;
 import bl.booking.SeatService;
 import core.entity.Booking;
 import core.entity.Room;
+import core.entity.Seat;
 
 public class ClientService extends UserService {
 
@@ -21,8 +22,11 @@ public class ClientService extends UserService {
 
 			System.out.println("1. Book a seat");
 			System.out.println("2. Display my bookings");
-			System.out.println("3. Complain about a booking");
-			System.out.println("4. Logout");
+			System.out.println("3. Resell my seat");
+			System.out.println("4. Exchange my seat");
+			System.out.println("5. Cancel my booking");
+			System.out.println("6. Complain about a booking");
+			System.out.println("7. Logout");
 
 			Scanner scanner = new Scanner(System.in);
 			System.out.println("Press an option: ");
@@ -49,7 +53,13 @@ public class ClientService extends UserService {
 							+ myBooking.getSeat().getRoom().getBeginTimeStamp());
 				}
 				break;
-			case 4:
+			case 5:
+				System.out.println("Enter the ID of the booking you wish to cancel");
+				Integer bId = scanner.nextInt();
+				SeatService.popBookingList(SeatService.getBookingById(bId));
+				System.out.println("Your booking with ID " + bId + " has been cancelled");
+				break;
+			case 7:
 				isLoggedIn = false;
 				logout();
 				break;
@@ -59,10 +69,6 @@ public class ClientService extends UserService {
 			}
 		}
 	}
-
-//	private void checkIfSeatIsAvailable(Seat seat) {
-//		
-//	}
 
 	private List<Integer> chooseASeat(Room chosenRoom) {
 		Scanner scanner = new Scanner(System.in);
@@ -80,6 +86,7 @@ public class ClientService extends UserService {
 	}
 
 	private Room chooseARoom() {
+		// TODO: Check for time slot, only one seat for single time slot
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Please choose a room from below and enter the id");
 		for (Room room : RoomService.getRoomList()) {

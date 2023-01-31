@@ -21,6 +21,14 @@ public class SeatService {
 		bookingList.add(booking);
 	}
 
+	public static void popBookingList(Booking booking) {
+		bookingList.remove(booking);
+	}
+
+	public static Booking getBookingById(Integer bookingId) {
+		return getBookingList().stream().filter(b -> b.getId() == bookingId).findFirst().orElse(null);
+	}
+
 	public static Integer bookSeat(User loggedInUser, Room chosenRoom, int row, int column) {
 		Seat seat = new Seat(row, column, chosenRoom);
 		Double regularPrice = chosenRoom.getRegularPrice();

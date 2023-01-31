@@ -21,7 +21,7 @@ public class RoomService {
 	}
 
 	public static Room getRoomById(Integer id) {
-		return RoomService.getRoomList().stream().filter(r -> id == r.getId()).findFirst().orElse(null);
+		return getRoomList().stream().filter(r -> id == r.getId()).findFirst().orElse(null);
 	}
 
 	public static Integer bookRoom(User loggedInUser, RoomType roomType, int rows, double price,
