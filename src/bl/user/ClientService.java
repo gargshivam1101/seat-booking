@@ -1,5 +1,6 @@
 package bl.user;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -9,7 +10,6 @@ import bl.booking.RoomService;
 import bl.booking.SeatService;
 import core.entity.Booking;
 import core.entity.Room;
-import core.entity.Seat;
 
 public class ClientService extends UserService {
 
@@ -22,11 +22,12 @@ public class ClientService extends UserService {
 
 			System.out.println("1. Book a seat");
 			System.out.println("2. Display my bookings");
-			System.out.println("3. Resell my seat");
-			System.out.println("4. Exchange my seat");
-			System.out.println("5. Cancel my booking");
-			System.out.println("6. Complain about a booking");
-			System.out.println("7. Logout");
+			System.out.println("3. Post to resell my seat");
+			System.out.println("4. Check and book seats from resell list");
+			System.out.println("5. Exchange my seat");
+			System.out.println("6. Cancel my booking");
+			System.out.println("7. Complain about a booking");
+			System.out.println("8. Logout");
 
 			Scanner scanner = new Scanner(System.in);
 			System.out.println("Press an option: ");
@@ -53,13 +54,15 @@ public class ClientService extends UserService {
 							+ myBooking.getSeat().getRoom().getBeginTimeStamp());
 				}
 				break;
-			case 5:
+			case 3:
+				break;
+			case 6:
 				System.out.println("Enter the ID of the booking you wish to cancel");
 				Integer bId = scanner.nextInt();
 				SeatService.popBookingList(SeatService.getBookingById(bId));
 				System.out.println("Your booking with ID " + bId + " has been cancelled");
 				break;
-			case 7:
+			case 8:
 				isLoggedIn = false;
 				logout();
 				break;
@@ -86,10 +89,13 @@ public class ClientService extends UserService {
 	}
 
 	private Room chooseARoom() {
-		// TODO: Check for time slot, only one seat for single time slot
+		List<Room> eligibleRooms = RoomService.getRoomList().stream()
+				.filter(r -> !checkIfOverlap(r.getBeginTimeStamp(), r.getEndTimeStamp()))
+				.collect(Collectors.toList());
+
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Please choose a room from below and enter the id");
-		for (Room room : RoomService.getRoomList()) {
+		for (Room room : eligibleRooms) {
 			System.out.println("Room ID: " + room.getId() + ", of type " + room.getRoomType()
 					+ " and regular price " + room.getRegularPrice() + ", posted by "
 					+ room.getBusinessOwner().getUserDetails().getFirstName() + ", and available from "
@@ -97,5 +103,22 @@ public class ClientService extends UserService {
 		}
 		int choiceOfRoom = scanner.nextInt();
 		return RoomService.getRoomById(choiceOfRoom);
+	}
+
+	private Boolean checkIfOverlap(LocalDateTime beginTime, LocalDateTime endTime) {
+		List<LocalDateTime> unavailabilityOfUser = getBookingTimeStampsOfLoggedInUser();
+		for (LocalDateTime time : unavailabilityOfUser) {
+			if ((time.isAfter(beginTime) && time.isBefore(endTime))
+					|| beginTime.isBefore(LocalDateTime.now())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private List<LocalDateTime> getBookingTimeStampsOfLoggedInUser() {
+		return SeatService.getBookingList().stream().filter(
+				b -> b.getUser().getUserDetails().getEmail() == loggedInUser.getUserDetails().getEmail())
+				.map(b -> b.getTimestamp()).collect(Collectors.toList());
 	}
 }
