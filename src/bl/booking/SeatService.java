@@ -13,6 +13,8 @@ public class SeatService {
 
 	static List<Booking> bookingList = new ArrayList<>();
 
+	static List<Booking> resellList = new ArrayList<>();
+
 	public static List<Booking> getBookingList() {
 		return bookingList;
 	}
@@ -23,6 +25,18 @@ public class SeatService {
 
 	public static void popBookingList(Booking booking) {
 		bookingList.remove(booking);
+	}
+
+	public static List<Booking> getResellList() {
+		return resellList;
+	}
+
+	public static void putResellList(Booking booking) {
+		resellList.add(booking);
+	}
+
+	public static void popResellList(Booking booking) {
+		resellList.remove(booking);
 	}
 
 	public static Booking getBookingById(Integer bookingId) {

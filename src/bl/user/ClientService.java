@@ -55,6 +55,25 @@ public class ClientService extends UserService {
 				}
 				break;
 			case 3:
+				System.out.println("Enter the booking id");
+				Integer inputBookingId = scanner.nextInt();
+				Booking inputBooking = SeatService.getBookingById(inputBookingId);
+				System.out.println("Either enter the new price or the discount ratio in %");
+				String newValue = scanner.nextLine();
+				Double newPrice = inputBooking.getPrice();
+				if (newValue.contains("%")) {
+					Double discountRatio = (Double.parseDouble(newValue.substring(0, newValue.length() - 1)))
+							/ 100;
+					newPrice = inputBooking.getPrice() * (1 - (discountRatio));
+				} else {
+					newPrice = Double.parseDouble(newValue);
+				}
+				SeatService.popBookingList(inputBooking);
+				inputBooking.setPrice(newPrice);
+				inputBooking.setUser(null);
+				SeatService.putResellList(inputBooking);
+				System.out
+						.println("Your booking with id " + inputBookingId + "has been posted for reselling");
 				break;
 			case 6:
 				System.out.println("Enter the ID of the booking you wish to cancel");
@@ -73,19 +92,24 @@ public class ClientService extends UserService {
 		}
 	}
 
-	private List<Integer> chooseASeat(Room chosenRoom) {
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("Please choose a seat from the below list");
-		SeatService.showSeatsByRoom(chosenRoom);
-		String choiceOfSeat = scanner.nextLine();
-		int row = Integer.parseInt(choiceOfSeat.split(",")[0]);
-		int column = Integer.parseInt(choiceOfSeat.split(",")[1]);
+	private List<Integer> getRowAndColumnFromSeatNo(String seatNo) {
+		int row = Integer.parseInt(seatNo.split(",")[0]);
+		int column = Integer.parseInt(seatNo.split(",")[1]);
 		return new ArrayList<>() {
 			{
 				add(row);
 				add(column);
 			}
 		};
+
+	}
+
+	private List<Integer> chooseASeat(Room chosenRoom) {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Please choose a seat from the below list");
+		SeatService.showSeatsByRoom(chosenRoom);
+		String choiceOfSeat = scanner.nextLine();
+		return getRowAndColumnFromSeatNo(choiceOfSeat);
 	}
 
 	private Room chooseARoom() {
