@@ -16,7 +16,8 @@ public abstract class UserService implements IUserService {
 	static List<User> userList = new ArrayList<>(Arrays.asList(//
 			new User(new UserDetails("Admin", "User", "admin@soen.com", "admin"), Role.ADMIN), //
 			new User(new UserDetails("Shivam", "Garg", "shivam.garg@soen.com", "garg"), Role.OWNER), //
-			new User(new UserDetails("Client", "Garg", "s.g@soen.com", "client"), Role.CLIENT)));
+			new User(new UserDetails("SH", "GA", "s.g@soen.com", "client"), Role.CLIENT), //
+			new User(new UserDetails("Client", "Garg", "client.garg@soen.com", "client"), Role.CLIENT)));
 
 	static User loggedInUser = null;
 

@@ -43,6 +43,10 @@ public class SeatService {
 		return getBookingList().stream().filter(b -> b.getId() == bookingId).findFirst().orElse(null);
 	}
 
+	public static Booking getResellBookingById(Integer bookingId) {
+		return getResellList().stream().filter(b -> b.getId() == bookingId).findFirst().orElse(null);
+	}
+	
 	public static Integer bookSeat(User loggedInUser, Room chosenRoom, int row, int column) {
 		Seat seat = new Seat(row, column, chosenRoom);
 		Double regularPrice = chosenRoom.getRegularPrice();
