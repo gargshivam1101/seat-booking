@@ -1,6 +1,7 @@
 package core.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Booking {
@@ -9,20 +10,24 @@ public class Booking {
 	private Integer id;
 
 	private Seat seat;
-	
+
 	private Double price;
 
 	private LocalDateTime timestamp;
 
 	private User user;
-	
-	public Booking(Seat seat, Double price, LocalDateTime timestamp, User user) {
+
+	private List<Bid> resellBids;
+
+	public Booking(Seat seat, Double price, LocalDateTime timestamp, User user,
+			List<Bid> resellBids) {
 		super();
 		this.id = count.incrementAndGet();
 		this.seat = seat;
 		this.price = price;
 		this.timestamp = timestamp;
 		this.user = user;
+		this.resellBids = resellBids;
 	}
 
 	/**
@@ -94,13 +99,21 @@ public class Booking {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	
+	public List<Bid> getResellBids() {
+		return resellBids;
+	}
+
+	public void setResellBids(List<Bid> resellBids) {
+		this.resellBids = resellBids;
+	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Booking [id=").append(id).append(", seat=").append(seat).append(", price=")
 				.append(price).append(", timestamp=").append(timestamp).append(", user=").append(user)
-				.append("]");
+				.append(", resellBids=").append(resellBids).append("]");
 		return builder.toString();
 	}
 }

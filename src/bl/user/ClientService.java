@@ -8,8 +8,11 @@ import java.util.stream.Collectors;
 
 import bl.booking.RoomService;
 import bl.booking.SeatService;
+import core.entity.Bid;
 import core.entity.Booking;
 import core.entity.Room;
+import core.entity.User;
+import core.enums.Role;
 
 public class ClientService extends UserService {
 
@@ -22,7 +25,7 @@ public class ClientService extends UserService {
 
 			System.out.println("1. Book a seat");
 			System.out.println("2. Display my bookings");
-			System.out.println("3. Post to resell my seat");
+			System.out.println("3. Resell a seat");
 			System.out.println("4. Cancel my booking");
 			System.out.println("5. Complain about a booking");
 			System.out.println("6. Logout");
@@ -50,10 +53,7 @@ public class ClientService extends UserService {
 				}
 				break;
 			case 2:
-				List<Booking> myBookings = SeatService
-						.getBookingList().stream().filter(b -> b.getUser().getUserDetails()
-								.getEmail() == loggedInUser.getUserDetails().getEmail())
-						.collect(Collectors.toList());
+				List<Booking> myBookings = SeatService.getBookingsByUser(loggedInUser);
 				for (Booking myBooking : myBookings) {
 					System.out.println("ID: " + myBooking.getId() + " for Seat No. ("
 							+ myBooking.getSeat().getRow() + "," + myBooking.getSeat().getColumn()
@@ -62,16 +62,57 @@ public class ClientService extends UserService {
 				}
 				break;
 			case 3:
-				System.out.println("Enter the booking id");
-				Integer inputBookingId = scanner.nextInt();
-				Booking inputBooking = SeatService.getBookingById(inputBookingId);
-				Double newPrice = calculateNewPrice(inputBooking.getPrice());
-				SeatService.popBookingList(inputBooking);
-				inputBooking.setPrice(newPrice);
-				inputBooking.setUser(null);
-				SeatService.putResellList(inputBooking);
-				System.out
-						.println("Your booking with id " + inputBookingId + " has been posted for reselling");
+				System.out.println("1. Post a seat to resell");
+				System.out.println("2. Check status of resellings");
+
+				Integer choiceInReselling = scanner.nextInt();
+
+				switch (choiceInReselling) {
+				case 1:
+					System.out.println("Enter the booking id");
+					Integer inputBookingId = scanner.nextInt();
+					Booking inputBooking = SeatService.getBookingById(inputBookingId);
+					Double newPrice = calculateNewPrice(inputBooking.getPrice());
+					SeatService.popBookingList(inputBooking);
+					inputBooking.setPrice(newPrice);
+					SeatService.putResellList(inputBooking);
+					System.out
+							.println("Your booking with id " + inputBookingId + " has been posted for reselling");
+					break;
+				case 2:
+					// check status
+					List<Booking> resellBookings = SeatService.getResellBookingsByUser(loggedInUser);
+					System.out.println("You have posted the following bookings for reselling");
+					for (Booking resellBooking : resellBookings) {
+						System.out.println("ID: " + resellBooking.getId() + " for " + resellBooking.getPrice());
+					}
+					System.out.println("Please enter the booking ID to further check the status");
+					Integer interestedBookingId = scanner.nextInt();
+					Booking interestedBooking = SeatService.getResellBookingById(interestedBookingId);
+
+					System.out.println("The following bids have been placed on this booking");
+					Integer i = 1;
+					for (Bid resellBid : interestedBooking.getResellBids()) {
+						System.out.println(i++ + ". $" + resellBid.getPrice() + " by "
+								+ resellBid.getUserDetails().getFirstName());
+					}
+					System.out.println("Choose the number that you want to go ahead with, else press X");
+					try {
+						Integer chosenBidId = scanner.nextInt();
+						Bid approvedBid = interestedBooking.getResellBids().get(chosenBidId - 1);
+
+						SeatService.popResellList(interestedBooking);
+						interestedBooking.setUser(new User(approvedBid.getUserDetails(), Role.CLIENT));
+						SeatService.putBookingList(interestedBooking);
+						System.out.println("Your seat has been sold");
+					} catch (Exception e) {
+						// user enters anything except an integer
+						// do nothing, and flow will restart
+					}
+					break;
+				default:
+					System.out.println("Wrong choice");
+				}
 				break;
 			case 4:
 				System.out.println("Enter the ID of the booking you wish to cancel");
@@ -106,50 +147,48 @@ public class ClientService extends UserService {
 	}
 
 	private void bookFromResellList() {
-		System.out.println("1. Look for available seats");
-		System.out.println("2. Check status of ongoing negotiations");
 		Scanner scanner = new Scanner(System.in);
-		Integer input = scanner.nextInt();
-		switch (input) {
-		case 1:
-			System.out.println();
-			System.out.println("The following seats are available in resell list");
-			for (Booking booking : SeatService.getResellList()) {
-				System.out.println("Booking ID " + booking.getId() + ", Seat No. ("
-						+ booking.getSeat().getRow() + "," + booking.getSeat().getColumn()
-						+ ") in Room of type " + booking.getSeat().getRoom().getRoomType() + " at "
-						+ booking.getSeat().getRoom().getBeginTimeStamp() + " for $" + booking.getPrice());
-			}
-			System.out.println("Enter the Booking ID you are interested in");
-			Integer bookingId = scanner.nextInt();
-			Booking booking = SeatService.getResellBookingById(bookingId);
+		System.out.println();
+		System.out.println("The following seats are available in resell list");
+		for (Booking booking : SeatService.getResellList()) {
+			System.out.println("Booking ID " + booking.getId() + ", Seat No. ("
+					+ booking.getSeat().getRow() + "," + booking.getSeat().getColumn() + ") in Room of type "
+					+ booking.getSeat().getRoom().getRoomType() + " at "
+					+ booking.getSeat().getRoom().getBeginTimeStamp() + " for $" + booking.getPrice());
+		}
+		System.out.println("Enter the Booking ID you are interested in");
+		Integer bookingId = scanner.nextInt();
+		Booking booking = SeatService.getResellBookingById(bookingId);
 
-			if (booking == null) {
-				System.out.println("Error occurred. Please try again.");
-				return;
-			}
-
-			System.out.println("Do you want to book it or negotiate further?");
-			System.out.println("Enter B to book and N to negotiate");
-			scanner.nextLine();
-			String choiceOfBooking = scanner.nextLine();
-			if ("B".equalsIgnoreCase(choiceOfBooking)) {
-				SeatService.popResellList(booking);
-				booking.setUser(loggedInUser);
-				SeatService.putBookingList(booking);
-				System.out.println("Your booking has been made");
-			} else if ("N".equalsIgnoreCase(choiceOfBooking)) {
-				// Negotiate
-			} else {
-				System.out.println("Wrong input");
-			}
-			break;
-		case 2:
-			break;
-		default:
-			System.out.println("Wrong option");
+		if (booking == null) {
+			System.out.println("Error occurred. Please try again.");
+			return;
 		}
 
+		System.out.println("Do you want to book it or negotiate further?");
+		System.out.println("Enter B to book and N to negotiate");
+		scanner.nextLine();
+		String choiceOfBooking = scanner.nextLine();
+		if ("B".equalsIgnoreCase(choiceOfBooking)) {
+			SeatService.popResellList(booking);
+			booking.setUser(loggedInUser);
+			SeatService.putBookingList(booking);
+			System.out.println("Your booking has been made");
+		} else if ("N".equalsIgnoreCase(choiceOfBooking)) {
+			System.out.println("Enter your desired price for the seat");
+			Double desiredPrice = scanner.nextDouble();
+			Bid bid = new Bid(loggedInUser.getUserDetails(), desiredPrice);
+			List<Bid> resellBids = booking.getResellBids();
+			if (resellBids == null) {
+				resellBids = new ArrayList<>();
+			}
+			resellBids.add(bid);
+			booking.setResellBids(resellBids);
+
+			System.out.println("The seat's owner has been notified");
+		} else {
+			System.out.println("Wrong input");
+		}
 	}
 
 	private void bookANewSeat() {

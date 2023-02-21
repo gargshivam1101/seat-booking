@@ -3,6 +3,7 @@ package bl.booking;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import core.entity.Booking;
 import core.entity.Room;
@@ -43,10 +44,22 @@ public class SeatService {
 		return getBookingList().stream().filter(b -> b.getId() == bookingId).findFirst().orElse(null);
 	}
 
+	public static List<Booking> getBookingsByUser(User user) {
+		return getBookingList().stream()
+				.filter(b -> b.getUser().getUserDetails().getEmail() == user.getUserDetails().getEmail())
+				.collect(Collectors.toList());
+	}
+
 	public static Booking getResellBookingById(Integer bookingId) {
 		return getResellList().stream().filter(b -> b.getId() == bookingId).findFirst().orElse(null);
 	}
-	
+
+	public static List<Booking> getResellBookingsByUser(User user) {
+		return getResellList().stream()
+				.filter(b -> b.getUser().getUserDetails().getEmail() == user.getUserDetails().getEmail())
+				.collect(Collectors.toList());
+	}
+
 	public static Integer bookSeat(User loggedInUser, Room chosenRoom, int row, int column) {
 		Seat seat = new Seat(row, column, chosenRoom);
 		Double regularPrice = chosenRoom.getRegularPrice();
@@ -62,7 +75,7 @@ public class SeatService {
 			price = regularPrice;
 		}
 
-		Booking booking = new Booking(seat, price, LocalDateTime.now(), loggedInUser);
+		Booking booking = new Booking(seat, price, LocalDateTime.now(), loggedInUser, null);
 		putBookingList(booking);
 		return booking.getId();
 	}

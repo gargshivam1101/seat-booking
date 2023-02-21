@@ -4,5 +4,7 @@ public enum RoomType {
 	Restaurant, //
 	Cinema, //
 	Airplane, //
-	ConferenceRoom;
+	ConferenceRoom, //
+	StudyRoom, //
+	Auditorium;
 }
