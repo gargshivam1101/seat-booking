@@ -2,51 +2,40 @@ package core.entity;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Complaint {
+import core.enums.Role;
+
+public class Complaint extends Message {
 	private static final AtomicInteger count = new AtomicInteger(0);
 
 	private Integer id;
 
-	private String title;
-
-	private String desc;
-
-	public Complaint(String title, String desc) {
-		super();
+	public Complaint(String title, String desc, User user) {
+		super(title, desc, user,
+				new User(new UserDetails("Admin", "User", "admin@soen.com", "admin"), Role.ADMIN));
 		this.id = count.incrementAndGet();
-		this.title = title;
-		this.desc = desc;
 	}
 
+	/**
+	 * @return the id
+	 */
 	public Integer getId() {
 		return id;
 	}
 
+	/**
+	 * @param id the id to set
+	 */
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Complaint [id=").append(id).append(", title=").append(title).append(", desc=")
-				.append(desc).append("]");
+		builder.append("Complaint [getId()=").append(getId()).append(", getTitle()=").append(getTitle())
+				.append(", getDesc()=").append(getDesc()).append(", getUser1()=").append(getUser1())
+				.append(", getUser2()=").append(getUser2()).append("]");
 		return builder.toString();
 	}
+
 }

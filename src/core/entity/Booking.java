@@ -18,7 +18,7 @@ public class Booking {
 	private User user;
 
 	private List<Bid> resellBids;
-
+	
 	public Booking(Seat seat, Double price, LocalDateTime timestamp, User user,
 			List<Bid> resellBids) {
 		super();
