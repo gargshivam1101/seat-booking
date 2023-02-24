@@ -10,6 +10,7 @@ import bl.booking.ExchangeService;
 import bl.booking.RoomService;
 import bl.booking.SeatService;
 import bl.messaging.ComplaintService;
+import bl.messaging.MessagingService;
 import core.entity.Bid;
 import core.entity.Booking;
 import core.entity.ExchangeRequest;
@@ -30,8 +31,9 @@ public class ClientService extends UserService {
 			System.out.println("2. Display my bookings");
 			System.out.println("3. Resell a seat");
 			System.out.println("4. Cancel my booking");
-			System.out.println("5. Complain about a booking");
-			System.out.println("6. Logout");
+			System.out.println("5. Messenger");
+			System.out.println("6. Complain about a booking");
+			System.out.println("7. Logout");
 
 			Scanner scanner = new Scanner(System.in);
 			System.out.println("Press an option: ");
@@ -172,6 +174,24 @@ public class ClientService extends UserService {
 				System.out.println("Your booking with ID " + bId + " has been cancelled");
 				break;
 			case 5:
+				System.out.println("Enter 1 to send a new message and 2 to check incoming messages");
+				Integer messagingOption = scanner.nextInt();
+				if (messagingOption == 1) {
+					System.out.println("Enter email id of user you would like to communicate with");
+					scanner.nextLine();
+					String email = scanner.nextLine();
+					User userToSendMsg = getUserByEmail(email);
+					System.out.println("Enter the message to be sent");
+					String message = scanner.nextLine();
+					MessagingService.sendMessage(loggedInUser, userToSendMsg, message);
+					System.out.println("Your message has been sent");
+				} else if (messagingOption == 2) {
+					MessagingService.displayMessages(loggedInUser);
+				} else {
+					System.out.println("Please enter 1 or 2");
+				}
+				break;
+			case 6:
 				System.out.println("Please enter the booking ID against which you would like to complain");
 				Integer complainBookingId = scanner.nextInt();
 				Booking complainBooking = SeatService.getBookingById(complainBookingId);
@@ -182,7 +202,7 @@ public class ClientService extends UserService {
 						desc);
 				System.out.println("Your complaint has been registered with ID " + complaintID);
 				break;
-			case 6:
+			case 7:
 				isLoggedIn = false;
 				logout();
 				break;

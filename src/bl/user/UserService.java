@@ -79,8 +79,13 @@ public abstract class UserService implements IUserService {
 		}
 	}
 
-	public static void logout() {
+	protected static void logout() {
 		System.out.println("You have been successfully logged out");
 		login();
+	}
+
+	protected static User getUserByEmail(String email) {
+		return userList.stream().filter(u -> email.equalsIgnoreCase(u.getUserDetails().getEmail())).findFirst()
+				.orElse(null);
 	}
 }
