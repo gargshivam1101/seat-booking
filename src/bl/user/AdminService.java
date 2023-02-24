@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import bl.messaging.ComplaintService;
+import core.entity.Complaint;
 import core.entity.User;
 import core.entity.UserDetails;
 import core.enums.Role;
@@ -41,6 +43,9 @@ public class AdminService extends UserService {
 			case 4:
 				displayUsersByRole(Role.CLIENT);
 				break;
+			case 5:
+				displayComplaints();
+				break;
 			case 6:
 				isLoggedIn = false;
 				logout();
@@ -50,6 +55,15 @@ public class AdminService extends UserService {
 			}
 		}
 
+	}
+
+	private void displayComplaints() {
+		System.out.println("Following complaints have been registered");
+		for (Complaint complaint : ComplaintService.getComplaintList()) {
+			System.out.println("Complaint ID: " + complaint.getId() + " by "
+					+ complaint.getUser1().getUserDetails().getFirstName() + ", Title: "
+					+ complaint.getTitle() + " and Description: " + complaint.getDesc());
+		}
 	}
 
 	private void displayUsersByRole(Role role) {

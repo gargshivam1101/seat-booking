@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import bl.booking.ExchangeService;
 import bl.booking.RoomService;
 import bl.booking.SeatService;
+import bl.messaging.ComplaintService;
 import core.entity.Bid;
 import core.entity.Booking;
 import core.entity.ExchangeRequest;
@@ -169,6 +170,17 @@ public class ClientService extends UserService {
 				Integer bId = scanner.nextInt();
 				SeatService.popBookingList(SeatService.getBookingById(bId));
 				System.out.println("Your booking with ID " + bId + " has been cancelled");
+				break;
+			case 5:
+				System.out.println("Please enter the booking ID against which you would like to complain");
+				Integer complainBookingId = scanner.nextInt();
+				Booking complainBooking = SeatService.getBookingById(complainBookingId);
+				System.out.println("Kindly describe about your complaint");
+				scanner.nextLine();
+				String desc = scanner.nextLine();
+				Integer complaintID = ComplaintService.registerComplaint(loggedInUser, complainBooking,
+						desc);
+				System.out.println("Your complaint has been registered with ID " + complaintID);
 				break;
 			case 6:
 				isLoggedIn = false;

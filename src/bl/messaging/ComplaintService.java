@@ -20,8 +20,10 @@ public class ComplaintService {
 	}
 
 	public static Integer registerComplaint(User user, Booking booking, String description) {
-		String title = "Complaint for Booking ID: " + booking.getId();
+		String title = "Complaint for Booking ID: " + booking.getId() + " posted by "
+				+ booking.getSeat().getRoom().getBusinessOwner().getUserDetails().getFirstName();
 		Complaint complaint = new Complaint(title, description, user);
+		putComplaintList(complaint);
 		return complaint.getId();
 	}
 }

@@ -15,9 +15,11 @@ public abstract class UserService implements IUserService {
 
 	static List<User> userList = new ArrayList<>(Arrays.asList(//
 			new User(new UserDetails("Admin", "User", "admin@soen.com", "admin"), Role.ADMIN), //
-			new User(new UserDetails("Shivam", "Garg", "shivam.garg@soen.com", "garg"), Role.OWNER), //
-			new User(new UserDetails("SH", "GA", "s.g@soen.com", "client"), Role.CLIENT), //
-			new User(new UserDetails("Client", "Garg", "client.garg@soen.com", "client"), Role.CLIENT)));
+			new User(new UserDetails("O1", "User", "bowner1@soen.com", "o1"), Role.OWNER), //
+			new User(new UserDetails("O2", "User", "bowner2@soen.com", "o2"), Role.CLIENT), //
+			new User(new UserDetails("C1", "User", "client1@soen.com", "c1"), Role.CLIENT), //
+			new User(new UserDetails("C2", "User", "client2@soen.com", "c2"), Role.CLIENT), //
+			new User(new UserDetails("C3", "User", "client3@soen.com", "c3"), Role.CLIENT)));
 
 	static User loggedInUser = null;
 
@@ -57,18 +59,23 @@ public abstract class UserService implements IUserService {
 
 			System.out.println("Welcome " + lgInUser.getUserDetails().getFirstName());
 
-			if (lgInUser.getRole().equals(Role.ADMIN)) {
-				AdminService adminService = new AdminService();
-				adminService.menu();
-			} else if (lgInUser.getRole().equals(Role.OWNER)) {
-				OwnerService ownerService = new OwnerService();
-				ownerService.menu();
-			} else if (lgInUser.getRole().equals(Role.CLIENT)) {
-				ClientService clientService = new ClientService();
-				clientService.menu();
-			} else {
-				System.out.println("ERROR");
+			try {
+				if (lgInUser.getRole().equals(Role.ADMIN)) {
+					AdminService adminService = new AdminService();
+					adminService.menu();
+				} else if (lgInUser.getRole().equals(Role.OWNER)) {
+					OwnerService ownerService = new OwnerService();
+					ownerService.menu();
+				} else if (lgInUser.getRole().equals(Role.CLIENT)) {
+					ClientService clientService = new ClientService();
+					clientService.menu();
+				} else {
+					System.out.println("ERROR");
+				}
+			} catch (Exception e) {
+				System.out.println("Please retry with correct input format");
 			}
+
 		}
 	}
 
