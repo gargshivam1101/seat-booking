@@ -60,6 +60,12 @@ public class SeatService {
 				.collect(Collectors.toList());
 	}
 
+	public static List<Booking> getResellPostingsExceptUser(User user) {
+		return getResellList().stream()
+				.filter(b -> b.getUser().getUserDetails().getEmail() != user.getUserDetails().getEmail())
+				.collect(Collectors.toList());
+	}
+
 	public static Integer bookSeat(User loggedInUser, Room chosenRoom, int row, int column) {
 		Seat seat = new Seat(row, column, chosenRoom);
 		Double regularPrice = chosenRoom.getRegularPrice();

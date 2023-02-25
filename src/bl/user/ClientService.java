@@ -23,6 +23,7 @@ public class ClientService extends UserService {
 	@Override
 	public void menu() {
 		Boolean isLoggedIn = true;
+		showNotifications();
 		while (isLoggedIn) {
 			System.out.println("✦•······················•✦•······················•✦");
 			System.out.println("Please choose an option from the below menu");
@@ -213,6 +214,17 @@ public class ClientService extends UserService {
 		}
 	}
 
+	private void showNotifications() {
+		System.out.println("————— ୨୧ —————");
+		System.out.println("NOTIFICATIONS");
+		System.out.println("————— ୨୧ —————");
+		System.out.println("Follwing bookings are available on resell list");
+		showResellBookings();
+		System.out.println("\nHit Enter to continue");
+		Scanner scanner = new Scanner(System.in);
+		scanner.nextLine();
+	}
+
 	private Double calculateNewPrice(Double oldPrice) {
 		System.out.println("Either enter the new price or the discount ratio in %");
 		Scanner scanner = new Scanner(System.in);
@@ -232,12 +244,7 @@ public class ClientService extends UserService {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println();
 		System.out.println("The following seats are available in resell list");
-		for (Booking booking : SeatService.getResellList()) {
-			System.out.println("Booking ID " + booking.getId() + ", Seat No. ("
-					+ booking.getSeat().getRow() + "," + booking.getSeat().getColumn() + ") in Room of type "
-					+ booking.getSeat().getRoom().getRoomType() + " at "
-					+ booking.getSeat().getRoom().getBeginTimeStamp() + " for $" + booking.getPrice());
-		}
+		showResellBookings();
 		System.out.println("Enter the Booking ID you are interested in");
 		Integer bookingId = scanner.nextInt();
 		Booking booking = SeatService.getResellBookingById(bookingId);
@@ -270,6 +277,15 @@ public class ClientService extends UserService {
 			System.out.println("The seat's owner has been notified");
 		} else {
 			System.out.println("Wrong input");
+		}
+	}
+
+	private void showResellBookings() {
+		for (Booking booking : SeatService.getResellPostingsExceptUser(loggedInUser)) {
+			System.out.println("Booking ID " + booking.getId() + ", Seat No. ("
+					+ booking.getSeat().getRow() + "," + booking.getSeat().getColumn() + ") in Room of type "
+					+ booking.getSeat().getRoom().getRoomType() + " at "
+					+ booking.getSeat().getRoom().getBeginTimeStamp() + " for $" + booking.getPrice());
 		}
 	}
 
