@@ -54,53 +54,7 @@ public class ClientService extends UserService {
 					bookFromResellList();
 					break;
 				case 3:
-					System.out.println("1. Make a new request");
-					System.out.println("2. Check existing requests");
-					Integer exchangeMethod = scanner.nextInt();
-					if (exchangeMethod == 1) {
-						System.out.println("Enter ID of your booking you would like to exchange");
-						Integer ownBookingId = scanner.nextInt();
-						Booking ownBooking = SeatService.getBookingById(ownBookingId);
-						System.out.println("Following bookings are available from other users");
-						List<Booking> otherBookings = SeatService
-								.getBookingList().stream().filter(b -> b.getUser().getUserDetails()
-										.getEmail() != loggedInUser.getUserDetails().getEmail())
-								.collect(Collectors.toList());
-						for (Booking booking : otherBookings) {
-							System.out.println("ID: " + booking.getId() + " for Seat No. ("
-									+ booking.getSeat().getRow() + "," + booking.getSeat().getColumn()
-									+ ") and Room No " + booking.getSeat().getRoom().getId() + " at "
-									+ booking.getSeat().getRoom().getBeginTimeStamp());
-						}
-						System.out.println("Choose a booking ID to send an exhange request to its owner");
-						Integer interestedBookingIdToExchange = scanner.nextInt();
-						Booking interestedBooking = SeatService.getBookingById(interestedBookingIdToExchange);
-						ExchangeService.createExchangeRequest(ownBooking, interestedBooking);
-						System.out.println("Your exchange request has been created");
-						// send notification to user
-					} else if (exchangeMethod == 2) {
-						List<ExchangeRequest> requestsReceived = ExchangeService
-								.getExchangeRequestsReceviedByUser(loggedInUser);
-						if (requestsReceived.isEmpty()) {
-							System.out.println("You do not have incoming exchange requests");
-							return;
-						}
-						System.out.println("You have recevied the follwing exchange requests");
-						Integer i = 1;
-						for (ExchangeRequest request : requestsReceived) {
-							System.out.println(i++ + " - Booking Id: " + request.getBooking1().getId()
-									+ " to exchange with your Booking ID: " + request.getBooking2().getId());
-						}
-						System.out.println("Enter the serial number you want to continue with, or press X");
-						try {
-							Integer chosenExchangeReqId = scanner.nextInt();
-							ExchangeRequest chosenExchangeReq = requestsReceived.get(chosenExchangeReqId - 1);
-							ExchangeService.fulfilExchangeRequest(chosenExchangeReq);
-							System.out.println("Your booking has been exchanged");
-						} catch (Exception e) {
-							// do nothing
-						}
-					}
+					bookViaExchanging();
 					break;
 				default:
 					System.out.println("Wrong input");
@@ -134,35 +88,7 @@ public class ClientService extends UserService {
 							.println("Your booking with id " + inputBookingId + " has been posted for reselling");
 					break;
 				case 2:
-					// check status
-					List<Booking> resellBookings = SeatService.getResellBookingsByUser(loggedInUser);
-					System.out.println("You have posted the following bookings for reselling");
-					for (Booking resellBooking : resellBookings) {
-						System.out.println("ID: " + resellBooking.getId() + " for " + resellBooking.getPrice());
-					}
-					System.out.println("Please enter the booking ID to further check the status");
-					Integer interestedBookingId = scanner.nextInt();
-					Booking interestedBooking = SeatService.getResellBookingById(interestedBookingId);
-
-					System.out.println("The following bids have been placed on this booking");
-					Integer i = 1;
-					for (Bid resellBid : interestedBooking.getResellBids()) {
-						System.out.println(i++ + ". $" + resellBid.getPrice() + " by "
-								+ resellBid.getUserDetails().getFirstName());
-					}
-					System.out.println("Choose the number that you want to go ahead with, else press X");
-					try {
-						Integer chosenBidId = scanner.nextInt();
-						Bid approvedBid = interestedBooking.getResellBids().get(chosenBidId - 1);
-
-						SeatService.popResellList(interestedBooking);
-						interestedBooking.setUser(new User(approvedBid.getUserDetails(), Role.CLIENT));
-						SeatService.putBookingList(interestedBooking);
-						System.out.println("Your seat has been sold");
-					} catch (Exception e) {
-						// user enters anything except an integer
-						// do nothing, and flow will restart
-					}
+					checkAndApproveExistingRequests();
 					break;
 				default:
 					System.out.println("Wrong choice");
@@ -214,11 +140,97 @@ public class ClientService extends UserService {
 		}
 	}
 
+	/**
+	 * Method to check all the resell requests, and approve if required
+	 */
+	private void checkAndApproveExistingRequests() {
+		Scanner scanner = new Scanner(System.in);
+		List<Booking> resellBookings = SeatService.getResellBookingsByUser(loggedInUser);
+		System.out.println("You have posted the following bookings for reselling");
+		for (Booking resellBooking : resellBookings) {
+			System.out.println("ID: " + resellBooking.getId() + " for " + resellBooking.getPrice());
+		}
+		System.out.println("Please enter the booking ID to further check the status");
+		Integer interestedBookingId = scanner.nextInt();
+		Booking interestedBooking = SeatService.getResellBookingById(interestedBookingId);
+
+		System.out.println("The following bids have been placed on this booking");
+		Integer i = 1;
+		for (Bid resellBid : interestedBooking.getResellBids()) {
+			System.out.println(
+					i++ + ". $" + resellBid.getPrice() + " by " + resellBid.getUserDetails().getFirstName());
+		}
+		System.out.println("Choose the number that you want to go ahead with, else press X");
+		try {
+			Integer chosenBidId = scanner.nextInt();
+			Bid approvedBid = interestedBooking.getResellBids().get(chosenBidId - 1);
+
+			SeatService.popResellList(interestedBooking);
+			interestedBooking.setUser(new User(approvedBid.getUserDetails(), Role.CLIENT));
+			SeatService.putBookingList(interestedBooking);
+			System.out.println("Your seat has been sold");
+		} catch (Exception e) {
+			// user enters anything except an integer
+			// do nothing, and flow will restart
+		}
+
+	}
+
+	private void bookViaExchanging() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("1. Make a new request");
+		System.out.println("2. Check existing requests");
+		Integer exchangeMethod = scanner.nextInt();
+		if (exchangeMethod == 1) {
+			System.out.println("Enter ID of your booking you would like to exchange");
+			Integer ownBookingId = scanner.nextInt();
+			Booking ownBooking = SeatService.getBookingById(ownBookingId);
+			System.out.println("Following bookings are available from other users");
+			List<Booking> otherBookings = SeatService.getBookingList().stream().filter(
+					b -> b.getUser().getUserDetails().getEmail() != loggedInUser.getUserDetails().getEmail())
+					.collect(Collectors.toList());
+			for (Booking booking : otherBookings) {
+				System.out.println("ID: " + booking.getId() + " for Seat No. (" + booking.getSeat().getRow()
+						+ "," + booking.getSeat().getColumn() + ") and Room No "
+						+ booking.getSeat().getRoom().getId() + " at "
+						+ booking.getSeat().getRoom().getBeginTimeStamp());
+			}
+			System.out.println("Choose a booking ID to send an exhange request to its owner");
+			Integer interestedBookingIdToExchange = scanner.nextInt();
+			Booking interestedBooking = SeatService.getBookingById(interestedBookingIdToExchange);
+			ExchangeService.createExchangeRequest(ownBooking, interestedBooking);
+			System.out.println("Your exchange request has been created");
+		} else if (exchangeMethod == 2) {
+			List<ExchangeRequest> requestsReceived = ExchangeService
+					.getExchangeRequestsReceviedByUser(loggedInUser);
+			if (requestsReceived.isEmpty()) {
+				System.out.println("You do not have incoming exchange requests");
+				return;
+			}
+			System.out.println("You have recevied the follwing exchange requests");
+			Integer i = 1;
+			for (ExchangeRequest request : requestsReceived) {
+				System.out.println(i++ + " - Booking Id: " + request.getBooking1().getId()
+						+ " to exchange with your Booking ID: " + request.getBooking2().getId());
+			}
+			System.out.println("Enter the serial number you want to continue with, or press X");
+			try {
+				Integer chosenExchangeReqId = scanner.nextInt();
+				ExchangeRequest chosenExchangeReq = requestsReceived.get(chosenExchangeReqId - 1);
+				ExchangeService.fulfilExchangeRequest(chosenExchangeReq);
+				System.out.println("Your booking has been exchanged");
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
+
+	}
+
 	private void showNotifications() {
 		System.out.println("————— ୨୧ —————");
 		System.out.println("NOTIFICATIONS");
 		System.out.println("————— ୨୧ —————");
-		System.out.println("Follwing bookings are available on resell list");
+		System.out.println("Following bookings are available on resell list");
 		showResellBookings();
 		System.out.println("\nHit Enter to continue");
 		Scanner scanner = new Scanner(System.in);
@@ -335,6 +347,12 @@ public class ClientService extends UserService {
 		return RoomService.getRoomById(choiceOfRoom);
 	}
 
+	/**
+	 * Verify if the timestamps follow the required rules
+	 * @param beginTime
+	 * @param endTime
+	 * @return
+	 */
 	private Boolean checkIfOverlap(LocalDateTime beginTime, LocalDateTime endTime) {
 		List<LocalDateTime> unavailabilityOfUser = getBookingTimeStampsOfLoggedInUser();
 		for (LocalDateTime time : unavailabilityOfUser) {

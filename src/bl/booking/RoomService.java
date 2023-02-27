@@ -24,6 +24,16 @@ public class RoomService {
 		return getRoomList().stream().filter(r -> id == r.getId()).findFirst().orElse(null);
 	}
 
+	/**
+	 * Books a room so that owner can make it available for booking
+	 * @param loggedInUser
+	 * @param roomType
+	 * @param rows
+	 * @param price
+	 * @param beginTimeStamp
+	 * @param endTimeStamp
+	 * @return
+	 */
 	public static Integer bookRoom(User loggedInUser, RoomType roomType, int rows, double price,
 			LocalDateTime beginTimeStamp, LocalDateTime endTimeStamp) {
 		Room room = new Room(roomType, rows, price, loggedInUser, beginTimeStamp, endTimeStamp);

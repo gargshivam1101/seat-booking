@@ -18,12 +18,21 @@ public class MessagingService {
 		messageList.add(message);
 	}
 
+	/**
+	 * Send a message to another user
+	 * @param user1
+	 * @param user2
+	 * @param text
+	 */
 	public static void sendMessage(User user1, User user2, String text) {
 		String title = "Message from " + user1.getUserDetails().getEmail();
 		Message message = new Message(title, text, user1, user2);
 		putMessageList(message);
 	}
 
+	/*
+	 * See all the messages received
+	 */
 	public static void displayMessages(User user) {
 		List<Message> usersMessages = getMessageList().stream()
 				.filter(m -> m.getUser2().getUserDetails().getEmail() == user.getUserDetails().getEmail())

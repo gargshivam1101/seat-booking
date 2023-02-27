@@ -66,6 +66,10 @@ public class AdminService extends UserService {
 		}
 	}
 
+	/**
+	 * Filters the users according to the roles and displays the necessary information
+	 * @param role
+	 */
 	private void displayUsersByRole(Role role) {
 		List<User> allUsers = getUserList();
 		List<User> filteredUsersByRole = allUsers.stream().filter(user -> user.getRole().equals(role))

@@ -66,6 +66,14 @@ public class SeatService {
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * To book a seat so that clients can make a booking
+	 * @param loggedInUser User who is making a booking
+	 * @param chosenRoom Room in which the seat is
+	 * @param row Row of the seat
+	 * @param column Column of the seat
+	 * @return Booking ID of the room
+	 */
 	public static Integer bookSeat(User loggedInUser, Room chosenRoom, int row, int column) {
 		Seat seat = new Seat(row, column, chosenRoom);
 		Double regularPrice = chosenRoom.getRegularPrice();
@@ -86,6 +94,10 @@ public class SeatService {
 		return booking.getId();
 	}
 
+	/**
+	 * Displays all of the available and booked seats of a room
+	 * @param room The room whose seats are to be viewed
+	 */
 	public static void showSeatsByRoom(Room room) {
 		for (int i = 0; i < room.getSize(); i++) {
 			for (int j = 0; j < room.getSize(); j++) {

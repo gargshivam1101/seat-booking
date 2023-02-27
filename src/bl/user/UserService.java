@@ -13,6 +13,7 @@ public abstract class UserService implements IUserService {
 
 	public abstract void menu();
 
+	// hard coded few users, admin can register more users
 	static List<User> userList = new ArrayList<>(Arrays.asList(//
 			new User(new UserDetails("Admin", "User", "admin@soen.com", "admin"), Role.ADMIN), //
 			new User(new UserDetails("O1", "User", "bowner1@soen.com", "o1"), Role.OWNER), //
@@ -31,19 +32,20 @@ public abstract class UserService implements IUserService {
 		userList.add(user);
 	}
 
+	/**
+	 * The entry point and the main menu of the application
+	 */
 	public static void login() {
 		while (true) {
 			System.out.println("✦•······················•✦•······················•✦");
 			System.out.println("Please login with your registered credentials");
 
-			Scanner scanner = new Scanner(System.in); // java.io.console does not work on Eclipse
+			Scanner scanner = new Scanner(System.in);
 
 			System.out.println("Email Id: ");
 			String email = scanner.nextLine();
 			System.out.println("Password: ");
 			String password = scanner.nextLine();
-
-//		scanner.close();
 
 			User lgInUser = getUserList().stream()
 					.filter(user -> user.getUserDetails().getEmail().equals(email)
@@ -79,13 +81,21 @@ public abstract class UserService implements IUserService {
 		}
 	}
 
+	/**
+	 * Logs the user out of the application
+	 */
 	protected static void logout() {
 		System.out.println("You have been successfully logged out");
 		login();
 	}
 
+	/**
+	 * Find the user that matches the email
+	 * 
+	 * @param email email of user
+	 */
 	protected static User getUserByEmail(String email) {
-		return userList.stream().filter(u -> email.equalsIgnoreCase(u.getUserDetails().getEmail())).findFirst()
-				.orElse(null);
+		return userList.stream().filter(u -> email.equalsIgnoreCase(u.getUserDetails().getEmail()))
+				.findFirst().orElse(null);
 	}
 }

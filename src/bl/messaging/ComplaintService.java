@@ -19,6 +19,13 @@ public class ComplaintService {
 		complaintList.add(complaint);
 	}
 
+	/**
+	 * Register a complaint against a booking
+	 * @param user
+	 * @param booking
+	 * @param description
+	 * @return
+	 */
 	public static Integer registerComplaint(User user, Booking booking, String description) {
 		String title = "Complaint for Booking ID: " + booking.getId() + " posted by "
 				+ booking.getSeat().getRoom().getBusinessOwner().getUserDetails().getFirstName();

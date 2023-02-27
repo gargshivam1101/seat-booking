@@ -6,6 +6,11 @@ import java.util.Scanner;
 
 public class DateUtils {
 	
+	/**
+	 * Takes date and time input from the user to create a Java object
+	 * @param quesFormat To specify which date or time in the question
+	 * @return
+	 */
 	public static LocalDateTime inputDateFromUser(String quesFormat) {
 		Scanner scanner = new Scanner(System.in);
 
